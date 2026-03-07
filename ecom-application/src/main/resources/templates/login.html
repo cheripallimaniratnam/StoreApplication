@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Ladies Emporium | Login</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <!-- Logo -->
+    <img th:src="@{/images/logo.png}" alt="Store Logo" class="logo"/>
+
+    <!-- Store Title -->
+    <h2 class="login-title">Ladies Emporium</h2>
+
+    <!-- Login Form -->
+    <form th:action="@{/login}" method="post">
+
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    class="form-control"
+                    placeholder="Enter your username"
+                    required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    class="form-control"
+                    placeholder="Enter your password"
+                    required
+            />
+        </div>
+
+        <button type="submit" class="btn-primary">Login</button>
+
+    </form>
+
+    <!-- Error Message -->
+    <div th:if="${param.error}" class="error">
+        Invalid username or password.
+    </div>
+
+    <!-- Logout Message -->
+    <div th:if="${param.logout}" class="success">
+        You have been logged out successfully.
+    </div>
+
+</div>
+
+</body>
+
+</html>

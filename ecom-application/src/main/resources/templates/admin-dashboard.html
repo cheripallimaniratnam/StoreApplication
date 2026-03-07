@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="dashboard-body">
+
+<div class="dashboard-container">
+
+    <!-- Header -->
+    <div class="header">
+
+        <div class="logo-section">
+            <img th:src="@{/images/logo.png}" class="nav-logo">
+            <div>
+                <h1 class="brand-title">Admin Dashboard</h1>
+                <div class="brand-subtitle">Today's Store Summary</div>
+            </div>
+        </div>
+
+        <form th:action="@{/logout}" method="post">
+            <button class="logout-btn">Logout</button>
+        </form>
+
+    </div>
+
+    <!-- Statistics -->
+    <div class="menu-grid">
+
+        <div class="menu-card">
+            Today's Sales
+            <h2 th:text="${salesCount}"></h2>
+        </div>
+
+        <div class="menu-card">
+            Customers Today
+            <h2 th:text="${todayCustomers}"></h2>
+        </div>
+
+        <div class="menu-card">
+            Revenue Today
+            <h2>₹ <span th:text="${todayRevenue}"></span></h2>
+        </div>
+
+    </div>
+
+    <!-- Sales Table -->
+    <div class="table-container">
+
+        <div class="table-header">
+            <h2>Today's Sales</h2>
+        </div>
+
+        <table class="product-table">
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Brand</th>
+                <th>Customer</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+                <th>Time</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="sale : ${todaySales}">
+                <td th:text="${sale.id}"></td>
+                <td th:text="${sale.brand.name}"></td>
+                <td th:text="${sale.customer.name}"></td>
+                <td th:text="${sale.quantity}"></td>
+                <td th:text="${sale.soldPrice}"></td>
+                <td th:text="${sale.totalAmount}"></td>
+                <td th:text="${#temporals.format(sale.saleDate,'HH:mm')}"></td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+    <br><br>
+    <div class="back-section">
+        <a th:href="@{/home}" class="secondary-btn">
+            ← Return to Home
+        </a>
+    </div>
+</div>
+
+</body>
+</html>

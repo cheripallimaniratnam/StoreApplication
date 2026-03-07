@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Category Management</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="dashboard-body">
+
+<div class="table-container">
+
+    <div class="header">
+        <div class="logo-section">
+            <h1 class="brand-title">Manage Categories</h1>
+        </div>
+        <a th:href="@{/home}" class="secondary-btn">
+            ← Return to Home
+        </a>
+    </div>
+
+    <!-- Add Category -->
+    <br><br>
+
+    <form th:action="@{/categories/add}" method="post">
+
+        <div class="form-group">
+            <label>Category Name</label>
+            <input type="text" name="name" class="form-control" required>
+        </div>
+
+        <button type="submit" class="primary-btn">
+            Add Category
+        </button>
+
+    </form>
+
+    <br>
+
+    <!-- Category Table -->
+
+    <table class="product-table">
+
+        <thead>
+        <tr>
+            <!--            <th>ID</th>-->
+            <th>Category Name</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="c : ${categories}">
+            <!--            <td th:text="${c.id}"></td>-->
+            <td th:text="${c.name}"></td>
+            <td>
+                <a th:href="@{'/categories/delete/' + ${c.id}}"
+                   class="danger-btn"
+                   onclick="return confirm('Are you sure you want to delete this category?')">
+                    Delete
+                </a>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Sales Reports</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body class="dashboard-body">
+
+<div class="table-container">
+
+    <div class="header">
+        <div class="logo-section">
+            <h1 class="brand-title">Sales Report By Date</h1>
+        </div>
+        <a th:href="@{/home}" class="secondary-btn">Home</a>
+    </div>
+
+    <!-- Date Filter -->
+
+    <form th:action="@{/reports/date}" method="post" class="report-filter">
+
+        <div class="filter-group">
+
+            <label class="filter-label">Select Date</label>
+
+            <input type="date" name="date" class="date-input" required>
+
+            <button type="submit" class="primary-btn">
+                View Report
+            </button>
+
+        </div>
+
+    </form>
+
+    <!-- Error Message -->
+
+
+    <!-- Selected Date -->
+
+    <h3 th:if="${selectedDate}">
+        Showing results for: <span th:text="${selectedDate}"></span>
+    </h3>
+
+    <!-- Analytics Cards -->
+
+    <div class="analytics-cards" th:if="${sales}">
+
+        <div class="card">
+            <h4>Total Revenue</h4>
+            <p th:text="${totalRevenue}"></p>
+        </div>
+
+        <div class="card">
+            <h4>Total Orders</h4>
+            <p th:text="${totalOrders}"></p>
+        </div>
+
+        <div class="card">
+            <h4>Total Quantity Sold</h4>
+            <p th:text="${totalQuantity}"></p>
+        </div>
+
+        <div class="card">
+            <h4>Top Brand</h4>
+            <p th:text="${topBrand}"></p>
+        </div>
+
+    </div>
+
+    <br>
+
+    <!-- Sales Table -->
+
+    <table class="product-table" th:if="${sales != null}">
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Brand</th>
+            <th>Customer</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
+            <th>Date</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        <tr th:if="${sales == null or #lists.isEmpty(sales)}">
+            <td colspan="7" style="text-align:center; font-weight:600; color:#888;">
+                No sales found for selected date
+            </td>
+        </tr>
+        <tr th:each="sale : ${sales}">
+            <td th:text="${sale.id}"></td>
+            <td th:text="${sale.brand.name}"></td>
+            <td th:text="${sale.customer.name}"></td>
+            <td th:text="${sale.quantity}"></td>
+            <td th:text="${sale.soldPrice}"></td>
+            <td th:text="${sale.totalAmount}"></td>
+            <td th:text="${sale.saleDate}"></td>
+        </tr>
+
+        </tbody>
+
+    </table>
+
+</div>
+
+</body>
+</html>

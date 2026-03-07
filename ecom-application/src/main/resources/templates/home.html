@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+</head>
+
+<body class="dashboard-body">
+
+<div class="dashboard-container">
+
+    <!-- Header -->
+    <div class="header">
+
+        <div class="logo-section">
+            <img th:src="@{/images/logo.png}" class="nav-logo">
+            <div class="brand-text">
+                <h1 class="brand-title">Ladies Emporium</h1>
+                <span class="brand-subtitle">Fashion & Accessories Management</span>
+            </div>
+        </div>
+
+        <form th:action="@{/logout}" method="post">
+            <button class="logout-btn">Logout</button>
+        </form>
+
+    </div>
+
+
+    <div class="welcome-section">
+        <h2>Welcome Back 👋</h2>
+        <p>Manage your products, sales, and store operations from the dashboard.</p>
+    </div>
+
+    <!-- Main Navigation Cards -->
+
+    <div class="menu-grid">
+
+        <a th:href="@{/products/list}" class="menu-card">
+            View Products
+        </a>
+
+        <a th:href="@{/sales/new}" class="menu-card">
+            Purchase
+        </a>
+        <a th:href="@{/categories/showAllCategory}" class="menu-card">
+            Manage Categories
+        </a>
+
+
+        <a th:href="@{/products/bulk-add}" class="menu-card">
+            Add Product
+        </a>
+
+    </div>
+
+
+    <!-- Admin Section -->
+
+    <div sec:authorize="hasRole('ADMIN')">
+
+        <h3 class="admin-title">Admin Controls</h3>
+
+        <div class="menu-grid">
+
+            <a th:href="@{/admin/add-user}" class="menu-card admin-card">
+                Add User
+            </a>
+
+            <a th:href="@{/admin/dashboard}" class="menu-card admin-card">
+                Admin Dashboard
+            </a>
+
+            <a th:href="@{/reports}" class="menu-card admin-card">
+                Sales Reports
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+</html>

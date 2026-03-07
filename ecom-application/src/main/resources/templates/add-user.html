@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Add User</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<div class="user-form">
+
+    <h2 class="page-title">Create New User Account</h2>
+
+    <form th:action="@{/admin/save-user}" th:object="${user}" method="post">
+
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" class="form-control" th:field="*{username}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Email Address</label>
+            <input type="email" class="form-control" th:field="*{email}" required>
+        </div>
+
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" class="form-control" th:field="*{password}" required>
+        </div>
+
+        <div class="form-group">
+            <label>User Role</label>
+            <select class="form-control" th:field="*{role}">
+                <option value="ADMIN">Administrator</option>
+                <option value="USER">Standard User</option>
+            </select>
+        </div>
+
+        <button type="submit" class="success-btn">Create User</button>
+
+    </form>
+
+    <div class="back-section">
+        <a th:href="@{/home}" class="secondary-btn">← Return to Home</a>
+    </div>
+
+</div>
+
+</body>
+</html>
