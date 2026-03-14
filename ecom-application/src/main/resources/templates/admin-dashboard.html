@@ -3,7 +3,7 @@
 
 <head>
     <title>Admin Dashboard</title>
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
@@ -46,6 +46,11 @@
             <h2>₹ <span th:text="${todayRevenue}"></span></h2>
         </div>
 
+        <div class="menu-card">
+            Expenses Today
+            <h2>₹ <span th:text="${todayExpenses}"></span></h2>
+        </div>
+
     </div>
 
     <!-- Sales Table -->
@@ -59,7 +64,7 @@
 
             <thead>
             <tr>
-                <th>ID</th>
+<!--                <th>ID</th>-->
                 <th>Brand</th>
                 <th>Customer</th>
                 <th>Quantity</th>
@@ -71,14 +76,59 @@
 
             <tbody>
 
+            <tr th:if="${#lists.isEmpty(todayExpenseList)}">
+                <td colspan="7" style="text-align:center; font-weight:600; color:#888;">
+                    No Sales Found
+                </td>
+            </tr>
+
             <tr th:each="sale : ${todaySales}">
-                <td th:text="${sale.id}"></td>
+<!--                <td th:text="${sale.id}"></td>-->
                 <td th:text="${sale.brand.name}"></td>
                 <td th:text="${sale.customer.name}"></td>
                 <td th:text="${sale.quantity}"></td>
                 <td th:text="${sale.soldPrice}"></td>
                 <td th:text="${sale.totalAmount}"></td>
                 <td th:text="${#temporals.format(sale.saleDate,'HH:mm')}"></td>
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+    <br><br>
+
+    <div class="table-container">
+
+        <div class="table-header">
+            <h2>Today's Expenses</h2>
+        </div>
+
+        <table class="product-table">
+
+            <thead>
+            <tr>
+<!--                <th>ID</th>-->
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Time</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:if="${#lists.isEmpty(todayExpenseList)}">
+                <td colspan="7" style="text-align:center; font-weight:600; color:#888;">
+                    No Expenses Found
+                </td>
+            </tr>
+
+            <tr th:each="expense : ${todayExpenseList}">
+<!--                <td th:text="${expense.id}"></td>-->
+                <td th:text="${expense.description}"></td>
+                <td>₹ <span th:text="${expense.amount}"></span></td>
+                <td th:text="${#temporals.format(expense.expenseDate,'HH:mm')}"></td>
             </tr>
 
             </tbody>

@@ -30,7 +30,6 @@ public class SaleService {
     @Transactional
     public void processSale(SaleRequestDTO saleRequest) {
 
-        // Handle Customer
         Customer customer = customerRepo.findByMobileNumber(saleRequest.getCustomerMobile())
                 .orElseGet(() -> {
                     Customer newCust = new Customer();
@@ -39,66 +38,48 @@ public class SaleService {
                     return customerRepo.save(newCust);
                 });
 
-        // Process each sale item
-        for (SaleItemDTO item : saleRequest.getItems()) {
+        List<Sale> sales = saleRequest.getItems().stream()
+                .filter(item -> item.getBrandId() != null)
+                .map(item -> {
 
-            if (item.getBrandId() == null) continue;
+                    Brand brand = brandRepo.findById(item.getBrandId())
+                            .orElseThrow(() -> new RuntimeException("Brand not found"));
 
-            Brand brand = brandRepo.findById(item.getBrandId())
-                    .orElseThrow(() -> new RuntimeException("Brand not found"));
+                    int quantity = item.getQuantity();
 
-            int quantity = item.getQuantity();
+                    if (brand.getStockCount() < quantity) {
+                        throw new RuntimeException("Only " + brand.getStockCount() + " items available for " + brand.getName());
+                    }
+                    brand.setStockCount(brand.getStockCount() - quantity);
+                    Sale sale = new Sale();
+                    sale.setBrand(brand);
+                    sale.setQuantity(quantity);
+                    sale.setSoldPrice(item.getSellingPrice());
+                    sale.setCustomer(customer);
+                    brandRepo.save(brand);
+                    return sale;
+                })
+                .toList();
 
-            if (quantity <= 0) {
-                throw new RuntimeException("Quantity must be greater than 0");
-            }
-
-            if (brand.getStockCount() < quantity) {
-                throw new RuntimeException(
-                        "Only " + brand.getStockCount() + " items available for " + brand.getName()
-                );
-            }
-
-            brand.setStockCount(brand.getStockCount() - quantity);
-
-            Sale sale = new Sale();
-            sale.setBrand(brand);
-            sale.setQuantity(quantity);
-            sale.setSoldPrice(item.getSellingPrice());
-            sale.setTotalAmount();
-            sale.setCustomer(customer);
-
-            saleRepo.save(sale);
-            brandRepo.save(brand);
-        }
+        saleRepo.saveAll(sales);
     }
 
     public int getTodaySalesCount() {
 
-        LocalDate today = LocalDate.now();
-
-        return saleRepo.findAll().stream()
-                .filter(s -> s.getSaleDate().toLocalDate().equals(today))
-                .toList()
-                .size();
+       return getTodaySales().size();
     }
     public double getTodayRevenue() {
 
-        LocalDate today = LocalDate.now();
+       return getTodaySales().stream().mapToDouble(Sale::getTotalAmount).sum();
 
-        return saleRepo.findAll().stream()
-                .filter(s -> s.getSaleDate().toLocalDate().equals(today))
-                .mapToDouble(Sale::getTotalAmount)
-                .sum();
     }
 
     public List<Sale> getTodaySales() {
 
         LocalDate today = LocalDate.now();
-
-        return saleRepo.findAll().stream()
-                .filter(s -> s.getSaleDate().toLocalDate().equals(today))
-                .toList();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(23, 59, 59);
+        return saleRepo.findBySaleDateBetween(startOfDay,endOfDay);
     }
     public long getTodayCustomers() {
 
@@ -114,4 +95,5 @@ public class SaleService {
         LocalDateTime end = date.atTime(23,59,59);
 
         return saleRepo.findBySaleDateBetween(start,end);
-    }}
+    }
+}

@@ -1,6 +1,8 @@
 package com.store.application.controller;
 
+import com.store.application.model.Expense;
 import com.store.application.model.Sale;
+import com.store.application.service.ExpensesService;
 import com.store.application.service.SaleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,8 @@ public class ReportController {
 
     @Autowired
     private SaleService saleService;
+    @Autowired
+    private ExpensesService expenseService;
 
     @GetMapping
     public String reportPage() {
@@ -34,7 +38,7 @@ public class ReportController {
 
         List<Sale> sales = saleService.getSalesByDate(selectedDate);
 
-        if(sales.isEmpty()){
+        if(sales ==null || sales.isEmpty()){
             model.addAttribute("error","No sales found for selected date");
         }
 
@@ -56,13 +60,23 @@ public class ReportController {
                 .map(Map.Entry::getKey)
                 .orElse("N/A");
 
+        // EXPENSES
+        List<Expense> expenses =
+                expenseService.getExpensesByDate(selectedDate);
+
+        double totalExpenses = expenses.stream()
+                .mapToDouble(Expense::getAmount)
+                .sum();
+
+
         model.addAttribute("sales", sales);
         model.addAttribute("selectedDate", date);
         model.addAttribute("totalRevenue", totalRevenue);
         model.addAttribute("totalOrders", totalOrders);
         model.addAttribute("totalQuantity", totalQuantity);
         model.addAttribute("topBrand", topBrand);
-
+        model.addAttribute("expenses", expenses);
+        model.addAttribute("totalExpenses", totalExpenses);
         return "reports";
     }
 }

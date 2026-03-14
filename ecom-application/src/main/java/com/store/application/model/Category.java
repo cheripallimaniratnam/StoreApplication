@@ -22,7 +22,7 @@ public class Category {
 
     @LastModifiedDate
     private LocalDateTime lastModifiedDate;
-
+    @Column(unique = true)
     private String name;
 
     public Long getId() {

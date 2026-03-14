@@ -1,32 +1,59 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <title>Category Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 
 <body class="dashboard-body">
-
 <div class="table-container">
 
+
+    <!-- Header -->
     <div class="header">
         <div class="logo-section">
-            <h1 class="brand-title">Manage Categories</h1>
+            <img th:src="@{/images/logo.png}" class="nav-logo">
+            <div class="brand-text">
+                <h1 class="brand-title">Manage Categories</h1>
+            </div>
         </div>
+
         <a th:href="@{/home}" class="secondary-btn">
             ← Return to Home
         </a>
     </div>
 
+
+    <!-- Success / Error Messages -->
+    <div th:if="${success}" class="success">
+        <span th:text="${success}"></span>
+    </div>
+
+    <div th:if="${error}" class="error">
+        <span th:text="${error}"></span>
+    </div>
+
+
     <!-- Add Category -->
-    <br><br>
+    <br>
 
     <form th:action="@{/categories/add}" method="post">
 
         <div class="form-group">
             <label>Category Name</label>
-            <input type="text" name="name" class="form-control" required>
+
+            <input type="text"
+                   name="name"
+                   class="form-control"
+                   placeholder="Enter category name"
+                   minlength="2"
+                   maxlength="50"
+                   oninput="this.value = this.value.toUpperCase()"
+                   required>
+
         </div>
 
         <button type="submit" class="primary-btn">
@@ -35,7 +62,9 @@
 
     </form>
 
-    <br>
+
+    <br><br>
+
 
     <!-- Category Table -->
 
@@ -43,30 +72,141 @@
 
         <thead>
         <tr>
-            <!--            <th>ID</th>-->
             <th>Category Name</th>
-            <th>Action</th>
+            <th style="width:220px;">Action</th>
         </tr>
         </thead>
 
         <tbody>
 
+        <!-- Empty state -->
+        <tr th:if="${#lists.isEmpty(categories)}">
+            <td colspan="2" style="text-align:center;">
+                No categories available
+            </td>
+        </tr>
+
+
         <tr th:each="c : ${categories}">
-            <!--            <td th:text="${c.id}"></td>-->
-            <td th:text="${c.name}"></td>
+
+            <!-- Category Name -->
             <td>
-                <a th:href="@{'/categories/delete/' + ${c.id}}"
-                   class="danger-btn"
-                   onclick="return confirm('Are you sure you want to delete this category?')">
-                    Delete
-                </a>
+
+            <span th:id="'nameText' + ${c.id}"
+                  th:text="${c.name}"></span>
+
+                <input type="text"
+                       th:id="'nameInput' + ${c.id}"
+                       th:value="${c.name}"
+                       style="display:none"
+                       class="table-input"
+                       oninput="this.value = this.value.toUpperCase()">
+
+            </td>
+
+
+            <!-- Actions -->
+            <td>
+
+                <!-- Edit -->
+                <button type="button"
+                        class="primary-btn"
+                        th:id="'editBtn' + ${c.id}"
+                        th:onclick="'editCategory(' + ${c.id} + ')'">
+                    Edit
+                </button>
+
+
+                <!-- Save -->
+                <form th:action="@{'/categories/update/' + ${c.id}}"
+                      method="post"
+                      style="display:inline;">
+
+                    <input type="hidden"
+                           th:id="'hiddenName' + ${c.id}"
+                           name="name">
+
+                    <button type="submit"
+                            class="success-btn"
+                            th:id="'saveBtn' + ${c.id}"
+                            style="display:none"
+                            th:onclick="'return saveCategory(' + ${c.id} + ')'">
+                        Save
+                    </button>
+
+                </form>
+
+
+                <!-- Cancel -->
+                <button type="button"
+                        class="secondary-btn"
+                        th:id="'cancelBtn' + ${c.id}"
+                        style="display:none"
+                        th:onclick="'cancelEdit(' + ${c.id} + ')'">
+                    Cancel
+                </button>
+
+
+                <!-- Delete -->
+                <form th:action="@{'/categories/delete/' + ${c.id}}"
+                      method="post"
+                      style="display:inline;">
+
+                    <button type="submit"
+                            class="danger-btn"
+                            onclick="return confirm('Are you sure you want to delete this category?')">
+                        Delete
+                    </button>
+
+                </form>
+
+            </td>
+
         </tr>
 
         </tbody>
 
     </table>
 
+
 </div>
 
+<script>
+
+function editCategory(id) {
+
+    document.getElementById("nameText" + id).style.display = "none";
+    document.getElementById("nameInput" + id).style.display = "inline";
+
+    document.getElementById("editBtn" + id).style.display = "none";
+    document.getElementById("saveBtn" + id).style.display = "inline";
+    document.getElementById("cancelBtn" + id).style.display = "inline";
+
+}
+
+
+function cancelEdit(id) {
+
+    document.getElementById("nameText" + id).style.display = "inline";
+    document.getElementById("nameInput" + id).style.display = "none";
+
+    document.getElementById("editBtn" + id).style.display = "inline";
+    document.getElementById("saveBtn" + id).style.display = "none";
+    document.getElementById("cancelBtn" + id).style.display = "none";
+
+}
+
+
+function saveCategory(id) {
+
+    const newName =
+        document.getElementById("nameInput" + id).value;
+        const upperName = newName.toUpperCase();
+        document.getElementById("hiddenName" + id).value = upperName;
+        return true;
+
+}
+
+</script>
 </body>
 </html>

@@ -56,4 +56,10 @@ public class BrandController {
         model.addAttribute("brands", brandservice.getAllProducts());
         return "product-inventory";
     }
+
+    @GetMapping("/all-brands")
+    @ResponseBody
+    public List<Brand> getAllBrands() {
+        return brandservice.getAllProducts();
+    }
 }

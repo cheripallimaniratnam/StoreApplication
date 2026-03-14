@@ -20,7 +20,7 @@ public class Sale {
     private LocalDateTime saleDate;
 
     @ManyToOne
-    @JoinColumn(name = "brand_id")
+    @JoinColumn(name = "brand_id", nullable = false)
     private Brand brand;
 
     private double soldPrice;
@@ -31,6 +31,8 @@ public class Sale {
     @ManyToOne
     private Customer customer;
 
+    @PrePersist
+    @PreUpdate
     public void setTotalAmount() {
         this.totalAmount = quantity * soldPrice;
     }

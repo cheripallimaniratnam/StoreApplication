@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BrandService {
@@ -38,30 +40,53 @@ public class BrandService {
 
         List<Brand> brandList = bulkBrand.getBrands()
                 .stream()
-                // remove empty names
+
+                // remove empty brand names
                 .filter(dto -> dto.getName() != null && !dto.getName().isBlank())
 
-                // validate price & stock
+                // validation
                 .peek(dto -> {
                     if (dto.getPrice() < 0) {
                         throw new InvalidBulkBrandException(
                                 "Price cannot be negative for brand: " + dto.getName());
                     }
+
                     if (dto.getStockCount() < 0) {
                         throw new InvalidBulkBrandException(
                                 "Stock cannot be negative for brand: " + dto.getName());
                     }
                 })
-                // convert DTO → Entity
+
+                // UPSERT logic
                 .map(dto -> {
-                    Brand brand = new Brand();
-                    brand.setName(dto.getName());
-                    brand.setPrice(dto.getPrice());
-                    brand.setStockCount(dto.getStockCount());
-                    brand.setCategory(category);
-                    return brand;
+
+                    Optional<Brand> existingBrand =
+                            brandRepo.findByNameIgnoreCaseAndCategoryId(dto.getName(), category.getId());
+
+                    if (existingBrand.isPresent()) {
+
+                        Brand brand = existingBrand.get();
+                        if(dto.getStockCount()!=0) {
+                            brand.setStockCount(brand.getStockCount() + dto.getStockCount());
+                        }
+                        if(dto.getPrice()!=0) {
+                            brand.setPrice(dto.getPrice());
+                        }
+                        return brand;
+                    } else {
+
+                        Brand brand = new Brand();
+                        brand.setName(dto.getName().trim());
+                        brand.setPrice(dto.getPrice());
+                        brand.setStockCount(dto.getStockCount());
+                        brand.setCategory(category);
+
+                        return brand;
+                    }
+
                 })
-                .toList(); // Java 16+
+
+                .collect(Collectors.toList());
 
         if (brandList.isEmpty()) {
             throw new InvalidBulkBrandException("Please add at least one valid brand.");

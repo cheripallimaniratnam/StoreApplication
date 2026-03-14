@@ -25,9 +25,7 @@ public class DailyReportScheduler {
     @Autowired
     private UserRepository userRepository;
 
-    //0 0 23 * * ?
-    //0 */2 * * * ?
-    @Scheduled(cron = "0 0 23 * * ?")
+    @Scheduled(cron = "0 50 23 * * ?")
     public void sendDailyReport() throws Exception {
 
         LocalDate today = LocalDate.now();

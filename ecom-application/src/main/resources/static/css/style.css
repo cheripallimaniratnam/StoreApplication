@@ -1,10 +1,15 @@
 /* ===== Global Page Styling ===== */
 
 body{
-font-family: Arial, Helvetica, sans-serif;
+font-family: 'Poppins', 'Segoe UI', Roboto, Arial, sans-serif;
 background: linear-gradient(to right, #4e73df, #224abe);
 min-height:100vh;
 margin:0;
+}
+
+h1, h2, h3, h4, h5{
+font-weight:600;
+letter-spacing:0.3px;
 }
 
 /* ===== Login Container ===== */
@@ -23,8 +28,10 @@ margin-top:80px;
 /* ===== Form Groups ===== */
 
 .form-group{
-margin-bottom:20px;
-text-align:left;
+    margin-bottom:22px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
 }
 
 .form-group label{
@@ -41,6 +48,7 @@ margin-top:5px;
 border-radius:5px;
 border:1px solid #ccc;
 font-size:14px;
+transition: all 0.2s ease
 }
 
 .form-control:focus{
@@ -66,13 +74,36 @@ cursor:pointer;
 /* ===== Messages ===== */
 
 .error{
-margin-top:15px;
-color:red;
+    margin-top:15px;
+    padding:12px 15px;
+    background:#fdecea;
+    color:#c0392b;
+    border-left:4px solid #e74a3b;
+    border-radius:6px;
+    font-size:14px;
+    font-weight:500;
+}
+
+.error{
+    margin-top:15px;
+    padding:12px 15px;
+    background:#fdecea;
+    color:#c0392b;
+    border-left:4px solid #e74a3b;
+    border-radius:6px;
+    font-size:14px;
+    font-weight:500;
 }
 
 .success{
-margin-top:15px;
-color:green;
+    margin-top:15px;
+    padding:12px 15px;
+    background:#eafaf1;
+    color:#1e8449;
+    border-left:4px solid #2ecc71;
+    border-radius:6px;
+    font-size:14px;
+    font-weight:500;
 }
 
 /* ===== logo image ===== */
@@ -85,9 +116,13 @@ margin-bottom:15px;
 /* ===== Login Title ===== */
 
 .login-title{
-text-align:center;
-margin-bottom:25px;
-font-weight:600;
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 26px;
+    font-weight: 600;
+    color: #2c3e50;
+    letter-spacing: 0.5px;
+    font-family: 'Poppins', sans-serif;
 }
 
 /* ===== Dashboard Page ===== */
@@ -240,6 +275,14 @@ background:white;
 border-radius:8px;
 overflow:hidden;
 box-shadow:0 4px 15px rgba(0,0,0,0.1);
+overflow: visible !important;
+}
+
+.product-table td{
+padding:12px;
+border-bottom:1px solid #eee;
+font-size:14px;
+color:#444;
 }
 
 .product-table th{
@@ -247,11 +290,8 @@ background:#4e73df;
 color:white;
 padding:14px;
 text-align:left;
-}
-
-.product-table td{
-padding:12px;
-border-bottom:1px solid #eee;
+font-size:14px;
+letter-spacing:0.4px;
 }
 
 .product-table tbody tr:hover
@@ -308,6 +348,7 @@ background:white;
 padding:30px;
 border-radius:10px;
 box-shadow:0 5px 20px rgba(0,0,0,0.1);
+overflow: visible !important;
 }
 
 .page-title{
@@ -441,7 +482,60 @@ color:#555;
 }
 
 .card p{
-font-size:20px;
-font-weight:700;
+font-size:22px;
+font-weight:600;
 color:#4e73df;
+}
+
+
+.empty-state{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    padding:18px;
+    font-size:15px;
+    font-weight:500;
+    color:#6b7280;
+    background:#f9fafc;
+    border-radius:6px;
+}
+
+.empty-icon{
+    font-size:18px;
+    opacity:0.7;
+}
+
+.section-title{
+    margin-top:30px;
+    margin-bottom:10px;
+    font-size:18px;
+    font-weight:600;
+    color:#374151;
+}
+
+.brandDropdown{
+    position:absolute;
+    top:100%;
+    left:0;
+    background:white;
+    border:1px solid #ddd;
+    width:100%;
+    max-height:200px;
+    overflow-y:auto;
+    z-index:9999;
+    border-radius:6px;
+    box-shadow:0 6px 15px rgba(0,0,0,0.2);
+    display:none;
+}
+
+.brandItem{
+padding:8px 10px;
+cursor:pointer;
+font-size:14px;
+}
+
+.brandItem:hover{
+background:#4e73df;
+color:white;
 }

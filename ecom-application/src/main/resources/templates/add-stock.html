@@ -3,7 +3,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Add Stock</title>
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" th:href="@{/css/style.css}">
 
 </head>
@@ -12,11 +13,24 @@
 
 <div class="form-container">
 
-        <h2 class="page-title">Add Stock</h2>
+    <!-- Header -->
+    <div class="header">
+        <div class="logo-section">
+            <img th:src="@{/images/logo.png}" class="nav-logo">
+            <div class="brand-text">
+                <h1 class="brand-title">Add Stock</h1>
+            </div>
+        </div>
 
+        <a th:href="@{/home}" class="secondary-btn">
+            ← Return to Home
+        </a>
+    </div>
+    <br><br>
     <form th:action="@{/products/bulk-save}"
           th:object="${bulkBrand}"
-          method="post">
+          method="post"
+          onsubmit="return validateCategory()">
 
         <!-- Category -->
 
@@ -24,7 +38,7 @@
 
             <label>Product Category</label>
 
-            <select th:field="*{categoryId}" class="form-control">
+            <select th:field="*{categoryId}" class="form-control" id="categorySelect">
                 <option value="">-- Select Category --</option>
                 <option th:each="c : ${categories}"
                         th:value="${c.id}"
@@ -42,8 +56,8 @@
             <thead>
             <tr>
                 <th>Brand Name</th>
-                <th>Unit Purchased Price</th>
                 <th>Available Stock</th>
+                <th>Unit Purchased Price</th>
                 <th>Action</th>
             </tr>
             </thead>
@@ -55,20 +69,21 @@
                 <td>
                     <input type="text"
                            class="table-input"
-                           th:name="'brands[' + ${stat.index} + '].name'" />
+                           th:name="'brands[' + ${stat.index} + '].name'"
+                           oninput="this.value = this.value.toUpperCase()"/>
+                </td>
+
+                <td>
+                    <input type="number"
+                           class="table-input"
+                           th:name="'brands[' + ${stat.index} + '].stockCount'"/>
                 </td>
 
                 <td>
                     <input type="number"
                            step="0.1"
                            class="table-input"
-                           th:name="'brands[' + ${stat.index} + '].price'" />
-                </td>
-
-                <td>
-                    <input type="number"
-                           class="table-input"
-                           th:name="'brands[' + ${stat.index} + '].stockCount'" />
+                           th:name="'brands[' + ${stat.index} + '].price'"/>
                 </td>
 
                 <td>
@@ -103,14 +118,16 @@
 
         </div>
 
+        <!-- Success / Error Messages -->
+        <div th:if="${success}" class="success">
+            <span th:text="${success}"></span>
+        </div>
+
+        <div th:if="${error}" class="error">
+            <span th:text="${error}"></span>
+        </div>
+
     </form>
-
-
-    <div class="back-section">
-        <a th:href="@{/home}" class="secondary-btn">
-            ← Return to Home
-        </a>
-    </div>
 
 </div>
 
@@ -124,10 +141,27 @@ function addRow() {
     let row = table.insertRow();
 
     row.innerHTML =
-        `<td><input class="table-input" type="text" name="brands[${index}].name"/></td>
-         <td><input class="table-input" type="number" step="0.1" name="brands[${index}].price"/></td>
-         <td><input class="table-input" type="number" name="brands[${index}].stockCount"/></td>
-         <td><button type="button" class="danger-btn" onclick="removeRow(this)">Remove</button></td>`;
+            `<td>
+            <input class="table-input" type="text"
+            name="brands[${index}].name"
+            oninput="this.value = this.value.toUpperCase()"/>
+            </td>
+
+            <td>
+            <input class="table-input" type="number"
+            name="brands[${index}].stockCount"/>
+            </td>
+
+            <td>
+            <input class="table-input" type="number"
+            step="0.1"
+            name="brands[${index}].price"/>
+            </td>
+
+            <td>
+            <button type="button" class="danger-btn"
+            onclick="removeRow(this)">Remove</button>
+            </td>`;
 
     index++;
 }
@@ -136,10 +170,45 @@ function removeRow(button) {
     let row = button.parentNode.parentNode;
     row.parentNode.removeChild(row);
 }
+
+function validateCategory(){
+
+    let category = document.getElementById("categorySelect");
+
+    if(category.value === ""){
+
+        alert("Please select a product category.");
+
+        category.style.border = "2px solid red";
+        category.focus();
+
+        return false;
+    }
+    // Handle empty stock and price
+    document.querySelectorAll("input[name*='stockCount']").forEach(function(input){
+        if(input.value === "" || input.value === null){
+            input.value = 0;
+        }
+    });
+
+    document.querySelectorAll("input[name*='price']").forEach(function(input){
+        if(input.value === "" || input.value === null){
+            input.value = 0;
+        }
+    });
+
+    return true;
+}
+
+
+
 </script>
 
 <script th:if="${error}">
     alert([[${error}]]);
+
+
+
 </script>
 
 </body>

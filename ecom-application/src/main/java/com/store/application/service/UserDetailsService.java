@@ -39,4 +39,13 @@ public class UserDetailsService {
                 .build();
         return build;
     }
+
+    public boolean existsByUsername(String username) {
+
+        if(repo.findByUsername(username).isPresent()){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

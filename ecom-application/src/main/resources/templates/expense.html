@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Expense Transaction</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+
+
+</head>
+
+<body class="dashboard-body">
+
+<div class="dashboard-container">
+
+
+    <!-- Header -->
+
+    <div class="header">
+        <div class="logo-section">
+            <img th:src="@{/images/logo.png}" class="nav-logo">
+            <div class="brand-text">
+                <h1 class="brand-title"> Daily Expenses</h1>
+            </div>
+        </div>
+
+        <a th:href="@{/home}" class="secondary-btn">
+            Home
+        </a>
+
+    </div>
+
+
+    <!-- Page Description -->
+
+    <div class="welcome-section">
+
+        <h2>Record Daily Expenses</h2>
+
+        <p>
+            Add all daily shop expenses such as transport, tea, delivery,
+            packaging or maintenance.
+        </p>
+
+    </div>
+
+
+    <!-- Expense Form -->
+
+    <div class="form-container">
+
+        <form th:action="@{/expenses/add}" method="post">
+
+            <h3 class="page-title">Expense Items</h3>
+
+
+            <!-- Expense Table -->
+
+            <table class="product-table">
+
+                <thead>
+
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+
+                </thead>
+
+                <tbody id="expenseBody">
+
+                <tr>
+
+                    <td>
+
+                        <input type="text"
+                               class="table-input"
+                               name="items[0].description"
+                               placeholder="Expense description"
+                               required>
+
+                    </td>
+
+                    <td>
+
+                        <input type="number"
+                               step="0.01"
+                               class="table-input"
+                               name="items[0].amount"
+                               placeholder="Amount"
+                               oninput="calculateTotal()"
+                               required>
+
+                    </td>
+
+                    <td>
+
+                        <button type="button"
+                                class="danger-btn"
+                                onclick="removeRow(this)">
+                            Remove
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <br>
+
+
+            <button type="button"
+                    class="primary-btn"
+                    onclick="addRow()">
+
+                + Add Another Expense
+
+            </button>
+
+
+            <h3 style="margin-top:20px;">
+
+                Total Expenses: ₹
+                <span id="grandTotal">0</span>
+
+            </h3>
+
+
+            <!-- Buttons -->
+
+            <div class="form-buttons">
+
+                <button type="submit"
+                        class="success-btn">
+
+                    Save Expenses
+
+                </button>
+
+                <a th:href="@{/home}"
+                   class="secondary-btn">
+
+                    Cancel
+
+                </a>
+
+            </div>
+            <!-- Success Message -->
+
+            <div th:if="${success}" class="success">
+
+                <span th:text="${success}"></span>
+
+
+            </div>
+        </form>
+
+    </div>
+
+
+</div>
+
+<script>
+
+let rowIndex = 1;
+
+
+function addRow(){
+
+    const table = document.getElementById("expenseBody");
+
+    const row = document.createElement("tr");
+
+    const template = document.querySelector("#expenseBody tr").innerHTML;
+
+    row.innerHTML =
+        template.replace(/items\[\d+\]/g,"items["+rowIndex+"]");
+
+    table.appendChild(row);
+
+    rowIndex++;
+
+    setTimeout(()=>{
+
+        row.querySelector("input").focus();
+
+    },50);
+
+}
+
+
+function removeRow(btn){
+
+    const rows = document.querySelectorAll("#expenseBody tr");
+
+    if(rows.length===1){
+
+        alert("At least one expense is required");
+
+        return;
+
+    }
+
+    btn.closest("tr").remove();
+
+    calculateTotal();
+
+}
+
+
+function calculateTotal(){
+
+    let total = 0;
+
+    document.querySelectorAll("input[name*='amount']").forEach(el=>{
+
+        total += parseFloat(el.value) || 0;
+
+    });
+
+    document.getElementById("grandTotal").innerText =
+        total.toFixed(2);
+
+}
+
+
+$(document).ready(function(){
+
+
+    // Auto focus first input
+
+    setTimeout(function(){
+
+        $("#expenseBody tr:first input:first").focus();
+
+    },100);
+
+
+    // ENTER key navigation (fast keyboard entry)
+
+    $(document).on("keydown","input",function(e){
+
+        if(e.key==="Enter"){
+
+            e.preventDefault();
+
+            const inputs = $("input:visible");
+
+            const index = inputs.index(this);
+
+            if(index>-1 && (index+1)<inputs.length){
+
+                inputs.eq(index+1).focus();
+
+            }
+
+        }
+
+    });
+
+});
+
+
+</script>
+
+<!-- Error Alert -->
+
+<script th:inline="javascript" th:if="${error}">
+
+alert([[${error}]]);
+
+</script>
+
+
+
+</body>
+
+</html>
