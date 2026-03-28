@@ -98,12 +98,14 @@
         <thead>
         <tr>
 <!--            <th>ID</th>-->
+            <th>Date</th>
             <th>Brand</th>
             <th>Customer</th>
             <th>Quantity</th>
-            <th>Price</th>
+            <th>Selling Price</th>
+            <th>Purchase Price</th>
             <th>Total</th>
-            <th>Date</th>
+            <th>Profit</th>
         </tr>
         </thead>
 
@@ -118,12 +120,17 @@
         </tr>
         <tr th:each="sale : ${sales}">
 <!--            <td th:text="${sale.id}"></td>-->
+            <td th:text="${sale.saleDate}"></td>
             <td th:text="${sale.brand.name}"></td>
             <td th:text="${sale.customer.name}"></td>
             <td th:text="${sale.quantity}"></td>
             <td th:text="${sale.soldPrice}"></td>
+            <td th:text="${sale.brand.price}"></td>
             <td th:text="${sale.totalAmount}"></td>
-            <td th:text="${sale.saleDate}"></td>
+            <td>
+                ₹
+                <span th:text="${sale.totalAmount - (sale.brand.price * sale.quantity)}"></span>
+            </td>
         </tr>
 
         </tbody>
@@ -140,9 +147,9 @@
         <thead>
         <tr>
 <!--            <th>ID</th>-->
+            <th>Date</th>
             <th>Description</th>
             <th>Amount</th>
-            <th>Date</th>
         </tr>
         </thead>
 
@@ -159,9 +166,9 @@
 
         <tr th:each="expense : ${expenses}">
 <!--            <td th:text="${expense.id}"></td>-->
+            <td th:text="${expense.expenseDate}"></td>
             <td th:text="${expense.description}"></td>
             <td th:text="${expense.amount}"></td>
-            <td th:text="${expense.expenseDate}"></td>
         </tr>
 
         </tbody>

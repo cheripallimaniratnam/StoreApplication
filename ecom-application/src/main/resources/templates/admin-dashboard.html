@@ -65,18 +65,20 @@
             <thead>
             <tr>
 <!--                <th>ID</th>-->
+                <th>Time</th>
                 <th>Brand</th>
                 <th>Customer</th>
                 <th>Quantity</th>
-                <th>Price</th>
+                <th>Selling Price</th>
+                <th>Purchase Price</th>
                 <th>Total</th>
-                <th>Time</th>
+                <th>Profit</th>
             </tr>
             </thead>
 
             <tbody>
 
-            <tr th:if="${#lists.isEmpty(todayExpenseList)}">
+            <tr th:if="${#lists.isEmpty(todaySales)}">
                 <td colspan="7" style="text-align:center; font-weight:600; color:#888;">
                     No Sales Found
                 </td>
@@ -84,12 +86,18 @@
 
             <tr th:each="sale : ${todaySales}">
 <!--                <td th:text="${sale.id}"></td>-->
+                <td th:text="${#temporals.format(sale.saleDate,'HH:mm')}"></td>
                 <td th:text="${sale.brand.name}"></td>
                 <td th:text="${sale.customer.name}"></td>
                 <td th:text="${sale.quantity}"></td>
                 <td th:text="${sale.soldPrice}"></td>
+                <td th:text="${sale.brand.price}"></td>
                 <td th:text="${sale.totalAmount}"></td>
-                <td th:text="${#temporals.format(sale.saleDate,'HH:mm')}"></td>
+
+                <td>
+                    ₹
+                    <span th:text="${sale.totalAmount - (sale.brand.price * sale.quantity)}"></span>
+                </td>
             </tr>
 
             </tbody>
@@ -110,9 +118,9 @@
             <thead>
             <tr>
 <!--                <th>ID</th>-->
+                <th>Time</th>
                 <th>Description</th>
                 <th>Amount</th>
-                <th>Time</th>
             </tr>
             </thead>
 
@@ -126,9 +134,9 @@
 
             <tr th:each="expense : ${todayExpenseList}">
 <!--                <td th:text="${expense.id}"></td>-->
+                <td th:text="${#temporals.format(expense.expenseDate,'HH:mm')}"></td>
                 <td th:text="${expense.description}"></td>
                 <td>₹ <span th:text="${expense.amount}"></span></td>
-                <td th:text="${#temporals.format(expense.expenseDate,'HH:mm')}"></td>
             </tr>
 
             </tbody>

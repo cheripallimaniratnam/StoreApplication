@@ -34,8 +34,8 @@
 <!--            <th>ID</th>-->
             <th>Category</th>
             <th>Brand Name</th>
-            <th>Price</th>
             <th>Stock</th>
+            <th>Purchased Price</th>
             <th>Created Date</th>
             <th>Last Modified</th>
         </tr>
@@ -46,8 +46,8 @@
 <!--            <td th:text="${b.id}"></td>-->
             <td th:text="${b.category != null ? b.category.name : 'N/A'}"></td>
             <td th:text="${b.name}"></td>
-            <td th:text="${b.price}"></td>
             <td th:text="${b.stockCount}"></td>
+            <td th:text="${b.price}"></td>
             <td th:text="${b.createdDate}"></td>
             <td th:text="${b.lastModifiedDate}"></td>
         </tr>
